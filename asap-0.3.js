@@ -1,74 +1,13 @@
-// returns the ms elapsed since this code was evalueated
-var getLoadTime = (function() {
-	var now = function() {
-			return new Date().getTime();	
-		},
-	
-		startTime = now();
-	
-	return function() {
-		return now() - startTime;	
-	};
-}());
-
-
-var $id = function(id) {
-	return document.getElementById(id);
-};
-
-
-// dont blow up if no console.log available
-if(!window.console) {
-	console = {
-		
-		pageLoaded: false,
-		consoleLoaded: false,
-		tmpMessageList: [],
-		
-		init: function() {
-			//alert("init");
-			var consoleDiv = document.createElement("div");
-			consoleDiv.id = "console";
-			consoleDiv.innerHTML = '<ul id="consoleLog"></ul>';
-			$id("main").appendChild(consoleDiv);
-			
-			for(var i=0, len=window.console.tmpMessageList.length; i<len; i++) {
-				this.displayMsg(window.console.tmpMessageList[i]);
-			}
-		},
-		
-		isConsoleLoaded: function() {
-			//alert("is loaded");
-			if(window.console.consoleLoaded) {
-				return true;
-			} else {
-				window.console.init();
-				if($id("console")) {
-					window.console.consoleLoaded = true;
-					return true;
-				} else  {
-					return false;
-				}
-			}
-		},
-
-		displayMsg: function(msg) {
-			//alert("display msg");
-			$id("consoleLog").innerHTML += "<li>" + msg + "</li>";
-		},
-
-		log: function(msg) {
-			//alert("log");
-			if(asap.isReady && window.console.isConsoleLoaded()) {
-				window.console.displayMsg(msg);
-			} else {
-				window.console.tmpMessageList.push(msg);
-			}
-		}
-	};
-}
-
-
+/* asap script loading library
+ * MIT License: http://en.wikipedia.org/wiki/MIT_License
+ * version:	0.3 - 4/9/2010
+ * author: andrew dot luetgers at gmail
+ */ 
+ 
+var _now = function() {return new Date().getTime();};
+var _startTime = _now();
+var getLoadTime = function() {return _now() - _startTime;};
+ 
 asap = (function() {
 
 	///////////////// implement the jQuery ready event///////////////////////////
@@ -213,7 +152,6 @@ asap = (function() {
 			} else if(this.require.scriptQue.length === 0 && !this.isCodeReady) {
 				
 				// if nothing in the que and dom is ready fire any codeReady callbacks
-			
 				console.log("checking if code is ready at: "+ getLoadTime());
 				if(!this.isReady && !this.codeReadyQued) {
 					//console.log("dom is not ready");
@@ -456,7 +394,7 @@ asap = (function() {
 			head.appendChild(script);
 		},
 		
-		// the jQuery scriptEval function 
+		// the jQuery scriptEval code 
 		// determines if can we execute code by injecting a script tag with appendChild/createTextNode
 		scriptEval = (function() {
 			var root = document.getElementsByTagName("head")[0] || document.documentElement,
@@ -465,7 +403,7 @@ asap = (function() {
 				suppport = false;
 				
 			script.type = "text/javascript";
-			script.charset = "utf-8";
+			//script.charset = "utf-8";
 			
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
@@ -491,7 +429,7 @@ asap = (function() {
 				script = document.createElement("script");
 				
 			script.type = "text/javascript";
-        	script.charset = "utf-8";
+        	//script.charset = "utf-8";
 			
 			if (scriptEval) {
 				script.appendChild(document.createTextNode(scriptText));
@@ -502,7 +440,7 @@ asap = (function() {
 			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
 			head.insertBefore(script, head.firstChild);
-			//head.removeChild(script);
+			head.removeChild(script);
 		},
 		
 		addStylesheet = function(url) {
@@ -524,11 +462,12 @@ asap = (function() {
 			if(typeof required == "object") {
 				files = required.files || required;
 				requiredCount = len = files.length || 0;
-				debug = required.debug || false;
+				debug = required.debug || forceAttatch || window.location.href.match("asap=debug");
 				scriptFile = "";
 				
 				// if localScriptRoot is not provided relative urls will be scoped to the page
-				localScriptRoot = required.scriptRoot || localScriptRoot;
+				// urls using ../ in their path will not work with a scriptRoot
+				localScriptRoot = required.root || localScriptRoot;
 				
 				for(var i=0; i<len; i++) {
 					var script = files[requestedCount];
@@ -624,9 +563,3 @@ asap = (function() {
 	return API;
 	
 }());
-
-asap.codeReady(function() {
-	console.log( "logging from codeReady at " + getLoadTime() );
-});
-
-//console.log("asap parsed at: " + getLoadTime());
