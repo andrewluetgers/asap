@@ -1,7 +1,7 @@
 var simple = {
 
 	init: function() {
-		$(junk).prepend("<p>Init Fired by asap!</p>");
+		$("body").prepend("<p>load js fast with asap!</p>");
 	}
 
 };
