@@ -1,12 +1,15 @@
 /* asap script loading library
  * MIT License: http://en.wikipedia.org/wiki/MIT_License
- * version:	0.3 - 4/9/2010
+ * version:	0.4 - 4/10/2010
  * author: andrew dot luetgers at gmail
  */ 
- 
-var _now = function() {return new Date().getTime();};
-var _startTime = _now();
-var getLoadTime = function() {return _now() - _startTime;};
+
+// this is use for debug purposes, not included in the minified version 
+if(!_now) {
+	var _now = function() {return new Date().getTime();};
+	var _startTime = _now();
+	var getLoadTime = function() {return _now() - _startTime;};
+}
  
 asap = (function() {
 
@@ -147,27 +150,29 @@ asap = (function() {
 		codeReadyQued: false,
 		
 		codeReady: function(fn) {
+		
 			if(typeof fn == "function") {
 				this.codeReadyList.push(fn);
-			} else if(this.require.scriptQue.length === 0 && !this.isCodeReady) {
+			}
+			
+			if(this.require.scriptQue.length === 0 && !this.isCodeReady) {
 				
 				// if nothing in the que and dom is ready fire any codeReady callbacks
-				console.log("checking if code is ready at: "+ getLoadTime());
 				if(!this.isReady && !this.codeReadyQued) {
-					//console.log("dom is not ready");
+					console.log("dom and/or code not ready at: "+ getLoadTime());
 					this.codeReadyQued = true;
 					this.domReady(function() {
 						API.codeReady();
 					});
 				} else {
-					
-					//console.log("dom and dom are ready");
+					console.log("code is ready at: "+ getLoadTime());
 					
 					// Remember that the DOM is ready and code was loaded
 					this.isCodeReady = true;
 		
 					// If there are functions bound, to execute
-					if ( this.codeReadyList ) {
+	
+					if ( this.codeReadyList.length ) {
 						// Execute all of them
 						var cb, i = 0;
 						while ( (cb = this.codeReadyList[ i++ ]) ) {
@@ -175,10 +180,11 @@ asap = (function() {
 						}
 		
 						// Reset the list of functions
-						this.codeReadyList = null;
+						this.codeReadyList = [];
 					}	
 				}
 			}
+			
 			return this;
 		}
 		
@@ -304,7 +310,7 @@ asap = (function() {
 		},
 		
 		// try to laod a given file from the que, if its next and loaded via xhr already it it will get parsed or the script tag will get generated
-		next = function() {
+		next = function(requestedScriptFile) {
 			var scriptFile, scriptObj;
 			//console.log("next...");
 			// intentionally doing assignment here!
@@ -315,7 +321,12 @@ asap = (function() {
 					scriptObj.status = "parsing";
 					//append the parse complete call to the loaded script code and eval it
 					globalScriptEval(scriptObj.response + " ; (asap.require.evalComplete('"+scriptFile+"'));");
-				} 
+					
+				// this is here for debug support... ie true for second param in asap.require(), debug:true in object notions or asap=debug url param
+				} else if(scriptObj.forceAttatch && scriptObj.status != "loading") {
+					scriptObj.status = "loading";
+					loadScriptNow(scriptFile);
+				}
 			}
 		},
 		
@@ -337,11 +348,11 @@ asap = (function() {
 				
 				 // start parsing the next item in the que
 				if(scriptQue.length) {
-					console.log("parse next: " + scriptQue[0]);
+					//console.log("parse next: " + scriptQue[0]);
 					next();
 				// que is empty no other files to load call codeReady
-				} else if(loadedCount == requiredCount){
-					console.log("call codeReady")
+				} else if(loadedCount == requiredCount) {
+					//console.log("call codeReady");
 					API.codeReady();
 				}
 			} else {
@@ -403,7 +414,6 @@ asap = (function() {
 				suppport = false;
 				
 			script.type = "text/javascript";
-			//script.charset = "utf-8";
 			
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
@@ -429,7 +439,6 @@ asap = (function() {
 				script = document.createElement("script");
 				
 			script.type = "text/javascript";
-        	//script.charset = "utf-8";
 			
 			if (scriptEval) {
 				script.appendChild(document.createTextNode(scriptText));
@@ -455,14 +464,14 @@ asap = (function() {
 		
 		// given a string of ", " separated urls or an object containing a (relative and absolute) load them all as soon as possible while maintaining execution order.
 		require = function(required, forceAttatch) {
-
+		
 			var files, len, scriptFile, scriptObj;
+			forceAttatch = forceAttatch || required.debug || window.location.href.match("asap=debug");
 			
 			// this function is overlaoded to handle multiple script requires via an array and individual script requires via string
 			if(typeof required == "object") {
 				files = required.files || required;
-				requiredCount = len = files.length || 0;
-				debug = required.debug || forceAttatch || window.location.href.match("asap=debug");
+				len = files.length || 0;
 				scriptFile = "";
 				
 				// if localScriptRoot is not provided relative urls will be scoped to the page
@@ -470,16 +479,9 @@ asap = (function() {
 				localScriptRoot = required.root || localScriptRoot;
 				
 				for(var i=0; i<len; i++) {
-					var script = files[requestedCount];
-					
-					// if were given an array of one item just append a script tag dont do anything fancy
-					if(typeof script == "object" && script.length == 1 && typeof script[0] == "string") {
-						asap.require(script[0], true);
-					} else {
-						// otherwise just recurse
-						asap.require(files[requestedCount], debug);
-					}
+					asap.require(files[i], forceAttatch);
 				}
+				
 				return this;
 			}
 	
@@ -489,12 +491,16 @@ asap = (function() {
 			} else {
 				// no protocol add the localScriptRoot
 				scriptFile = localScriptRoot+required;
-			}	
+			}
+			
+			requiredCount++;
 			
 			// if the file has not already been requested add it the the que and fire off a request for it
 			if(!scriptStatus[scriptFile]) {
 				
+				
 				scriptQue.push(scriptFile);
+				API.isCodeReady = false;
 				console.log("enqued: " + scriptFile + " at " + getLoadTime());
 				
 				scriptObj = scriptStatus[scriptFile] = {
@@ -507,7 +513,8 @@ asap = (function() {
 				
 				// avoid xhr injection when loading scripts from a different domain
 				if(!sameDomain(scriptFile) || forceAttatch) {
-					loadScriptNow(scriptFile);
+					scriptObj.forceAttatch = true;
+					next(scriptFile);
 					return this;
 				}
 				
@@ -529,9 +536,9 @@ asap = (function() {
 					},
 					onError: function(status) {
 						var theScriptStatus = scriptStatus[scriptFile];
-						if(typeof status == "object" && message in status) {
+						if(typeof status == "object" && "message" in status) {
 							theScriptStatus.status = "ERROR";
-							throw new Error("asap.get ERROR: "+status[message] + " on " + scriptFile);
+							throw new Error("asap.get ERROR: "+status["message"] + " on " + scriptFile);
 						} else if(status !== 404) {
 							loadScriptNow(scriptFile);
 						} else {
@@ -548,7 +555,7 @@ asap = (function() {
 			
 			return this;
 		};
-	
+
 	// register next with domReady
 	API.domReady(next);
 	
@@ -557,9 +564,12 @@ asap = (function() {
 	API.require.evalComplete = evalComplete;
 	API.require.scriptQue = scriptQue;
 	
-	
-	///////////////  all module sections done return the public api ///////////////////
+	///////////////  all module sections done setup and the public api ///////////////////
 	
 	return API;
 	
 }());
+
+// fix one "little detail": Firefox < 3.6 does not support  document.readyState 
+// see http://webreflection.blogspot.com/2009/11/195-chars-to-help-lazy-loading.html for Andrea Giammarchi's explaiation
+(function(A,s,a,p){if(A[s]==null&&A[a]){A[s]="loading";A[a](p,a=function(){A[s]="complete";A.removeEventListener(p,a,false)},false)}})(document,"readyState","addEventListener","DOMContentLoaded");

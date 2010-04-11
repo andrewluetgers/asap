@@ -5,36 +5,8 @@
 	<title>Scripts in HTML documents</title>
 	<link rel="stylesheet" type="text/css" href="W3C-REC.css">
 	<link rel="STYLESHEET" href="default.css" type="text/css">
-	<script language="JavaScript" type="text/javascript">
-		// returns the ms elapsed since this code was evalueated
-		var getLoadTime = (function() {
-			var now = function() {
-					return new Date().getTime();	
-				},
-			
-				startTime = now();
-			
-			return function() {
-				return now() - startTime;	
-			};
-		}());
-		
-		// if no log just capture messages
-		if(!window.console) {
-			console = {
-				messages: [],
-				log: function(msg) {
-					this.messages.push(msg);
-				}
-			};	
-		}
-		console.log("script tags in head:");
-	</script>
-	<script language="JavaScript" type="text/javascript" src="../libs/jquery-1.4.2.js"></script>
-	<script language="JavaScript" type="text/javascript" src="../libs/1.7.2-jquery-ui.js"></script>
-	<script language="JavaScript" type="text/javascript" src="myCodeJq.js"></script>
 </head>
-<body onload="console.log('onload at ' + getLoadTime());">
+<body onload="onLoadHandler();">
 <div class="navbar" align="center">&nbsp;<a href="forms.html">previous</a>
 &nbsp; <a href="../sgml/intro.html">next</a> &nbsp; <a href= 
 "../cover.html#minitoc">contents</a> &nbsp; <a href="../index/elements.html">
@@ -901,5 +873,39 @@ next</a> &nbsp; <a href="../cover.html#minitoc">contents</a> &nbsp; <a href=
 "../index/attributes.html">attributes</a> &nbsp; <a href="../index/list.html">
 
 index</a></div>
+	<script type="text/javascript">
+		// used for logging load time
+		var _now = function() {return new Date().getTime();};
+		var _startTime = _now();
+		var getLoadTime = function() {return _now() - _startTime;};
+		
+		// if no log just capture messages
+		if(!window.console) {
+			window.console = {
+				messages: [],
+				log: function(msg) {
+					this.messages.push(msg);
+				}
+			};	
+		}
+		
+		var onLoadHandler = function() {
+			console.log("onloadFired at " + getLoadTime());
+		};
+	</script>
+	
+	<script language="JavaScript" type="text/javascript" src="../asap-0.4-comments-logs.js"></script>
+	<script language="JavaScript" type="text/javascript">
+		asap.require([
+			"js/libs/json2.js",
+			"http://code.jquery.com/jquery-1.4.2.min.js",
+			"js/libs/1.7.2-jquery-ui.js",
+			"js/myCode.js"
+		]).domReady(function() {
+			console.log("asap domReady fired at "+ getLoadTime());
+		}).codeReady(function() {
+			console.log("asap codeReady fired at "+ getLoadTime());
+		});
+	</script>
 </body>
 </html>

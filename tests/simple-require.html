@@ -1,15 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>simple example</title>
+		<title>requireJS example</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	</head>
 	<body onload="onLoadHandler();" id="main">
 		
 		<table id="asserts">
-			<tr><td>last script block on page</td>	<td id="last">--</td></tr>
-			<tr><td>jQuery.ready</td>				<td id="jQuery.ready">--</td></tr>
-			<tr><td>body.onload</td>				<td id="body.onload">--</td></tr>
+			<tr><td>require ready == asap.domReady</td>			<td id="require.ready">--</td></tr>
+			<tr><td>require callback == asap.codeReady</td>		<td id="require.cb">--</td></tr>
+			<tr><td>jQuery.ready</td>							<td id="jQuery.ready">--</td></tr>
+			<tr><td>body.onload</td>							<td id="body.onload">--</td></tr>
 		</table>
 		
 		<img src="http://farm4.static.flickr.com/3034/3023580056_edfd2d7c8c_o.jpg">
@@ -47,11 +48,16 @@
 			};
 		</script>
 		
-		<script type="text/javascript" src="js/libs/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="js/libs/1.7.2-jquery-ui.js"></script>
-		<script type="text/javascript" src="js/simple.js"></script>
-		<script type="text/javascript">		
-			assert("last");
+		<script type="text/javascript" src="js/libs/require-min.js"></script>
+		<script type="text/javascript">
+			require([
+				"js/libs/jquery-1.4.2.min.js",
+				"js/libs/1.7.2-jquery-ui.js",
+				"js/simple.js"
+			], function() {
+				assert("require.cb");
+				simple.init();
+			});
 		</script>
 	</body>
 </html>

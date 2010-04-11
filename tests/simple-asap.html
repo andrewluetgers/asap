@@ -1,17 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>simple example</title>
+		<title>asap example</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	</head>
 	<body onload="onLoadHandler();" id="main">
 		
 		<table id="asserts">
-			<tr><td>last script block on page</td>	<td id="last">--</td></tr>
-			<tr><td>jQuery.ready</td>				<td id="jQuery.ready">--</td></tr>
-			<tr><td>body.onload</td>				<td id="body.onload">--</td></tr>
+			<tr><td>asap.domReady</td>	<td id="asap.domReady">--</td></tr>
+			<tr><td>asap.codeReady</td>	<td id="asap.codeReady">--</td></tr>
+			<tr><td>jQuery.ready</td>	<td id="jQuery.ready">--</td></tr>
+			<tr><td>body.onload</td>	<td id="body.onload">--</td></tr>
 		</table>
 		
+		<p>game of life jQuery plugin lazy loaded after body onload</p>
+		<div id="world"></div>
+		
+		<p>big images to delay page load</p>
 		<img src="http://farm4.static.flickr.com/3034/3023580056_edfd2d7c8c_o.jpg">
 
 		<img src="http://farm4.static.flickr.com/3300/3562725745_31cbf19d51_o.jpg">
@@ -41,17 +46,36 @@
 				console.log(id+" at "+ time);
 			};
 			
-			// onload assert
+			// onload handler
 			var onLoadHandler = function() {
 				assert("body.onload");
+				
+				// lazy-load a jquery plugin and then use it...
+				// single files can be passed in as a string insted of an array
+				asap.require("js/libs/gameOfLife.js").codeReady(function() {
+					// ...now use the plugin!
+					console.log("+++++++++++++++++++++lazyloaded");
+					$("#world").life({
+						boardWidth: 256, //number of colums
+						boardHeight: 256, //number of rows
+						cellsize: 8, //size of cells
+						timeout: 1 //delay between cycles
+					});
+				});
 			};
 		</script>
 		
-		<script type="text/javascript" src="js/libs/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="js/libs/1.7.2-jquery-ui.js"></script>
-		<script type="text/javascript" src="js/simple.js"></script>
+		<script type="text/javascript" src="../asap-0.4-min.js"></script>
 		<script type="text/javascript">		
-			assert("last");
+			asap.require([
+				"js/libs/jquery-1.4.2.min.js",
+				"js/libs/1.7.2-jquery-ui.js",
+				"js/simple.js"
+			]).domReady(function() {
+				assert("asap.domReady");
+			}).codeReady(function(){
+				assert("asap.codeReady");
+			});
 		</script>
 	</body>
 </html>

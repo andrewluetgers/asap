@@ -1,5 +1,20 @@
-Here at readme.txt we love finding out just who it is were reporting on, in that vein we sat down with asap.js on the 1st of April 2010 to delve deep into his unique predilection for loading javascript early and fast. Lets cut right the transcript.
+asap script loading library
+MIT License: 	http://en.wikipedia.org/wiki/MIT_License
+version:		0.4 - 4/10/2010
+author: 		andrew dot luetgers at gmail
 
+Changes in version 0.4:
+	* fixed a bug breaking script order in debug mode
+	* fixed a bug causing failure of lazy-loading after initial page load
+	* added document.readyState fix by Andrea Giammarchi detailed here -> http://webreflection.blogspot.com/2009/11/195-chars-to-help-lazy-loading.html
+	* added some comparative performance tests showing load times for asap, LABjs, requireJS and a sans-preloader baseline.
+	* added test index.html and some complex page type tests with baselines for comparison
+	* added api example of lazy loading to the simple-asap.html and to the readme.txt
+	
+
+Code Interview: 
+
+Here at readme.txt we love finding out just who it is were reporting on, in that vein we sat down with asap.js on the 1st of April 2010 to delve deep into his unique predilection for loading javascript early and fast. Lets cut right the transcript.
 
 RM: 	So is this a joke or what, it is April 1st?
 ASAP: 	No. I really am a new js loader! I know its stupid right? We already have two great loaders in LABjs and RequireJS I would not be surprised if there are a ton more.
@@ -44,6 +59,14 @@ ASAP: 	OK here's a couple code samples :-)
 		}).codeReady(function(){
 			simple.init();
 		});
+		
+		
+		// lazy load js after page load (a string can be passed instead of an array if only one file is required)
+		
+		asap.require("myFile").codeReady(function() {
+			...run code that requires "myFile"....
+		});
+		
 
 
 RM:		Aren't there problems with debugging code when its loaded with ajax, no line numbers?
@@ -58,8 +81,7 @@ ASAP:	Good point, that's why there are three ways you can force asap to use the 
 				
 
 RM: 	Looks good asap! Now if only Dion and Ben would would give you the time of day you might be forced to create some serious tests.
-ASAP: 	Its true I need some robust tests to verify my code correctness and functionality across all platforms.... there is a reason I'm version 0.3.
+ASAP: 	Its true I need some more robust tests to verify my code correctness and functionality across all platforms.... there is a reason I'm version 0.4
 
-End of interview...
 
-Aaaaand that wraps it up for this edition of readme.txt check back again when we review yet another thing we came with. 
+Aaaaand that wraps it up for this edition of readme.txt check back again when we review yet another random piece of code.

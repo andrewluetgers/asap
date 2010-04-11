@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>asap tests</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	</head>
+	<body>
+	
+		<h1>asap "tests"</h1>
+		<p>Not quite unit tests but this set of examples and comparisons provide some evidence of functionality. Pull up your browsers console to see more verbose logging.</p>
+		
+		<h2>simple comparative examples</h2>
+
+		<dl>
+			<dt><a href="simple.html">simple.html</a></dt>
+			<dd>A simple baseline that loads jQuer, jQuery UI and simple.js at the bottom of the page with no prelaoding solution employed.</dd>
+			
+			<dt><a href="simple-asap.html">simple-asap.html</a></dt>
+			<dd>The baseline example loading js with asap. Asap is used again in the onload handler to lazy load a jQuery plugin and run it once loaded using the codeReady callback.</dd>
+			
+			<dt><a href="simple-lab.html">simple-lab.html</a></dt>
+			<dd>The baseline example loading js with LABjs.</dd>
+			
+			<dt><a href="simple-require.html">simple-require.html</a></dt>
+			<dd>The baseline example loading js with requireJS.</dd>
+		</dl>
+		
+		<h2>complex page example</h2>
+		<dl>
+			<dt><a href="baseline-scripts-at-end-of-document.html">baseline-scripts-at-end-of-document.html</a></dt>
+			<dd>A baseline complex page with lots of html that laods jQuery, jQuery UI and myCode.js with scripts at the bottom of the page.</dd>
+			
+			<dt><a href="baseline-scripts-in-head.html">baseline-scripts-in-head.html</a></dt>
+			<dd>A baseline complex page with lots of html that laods jQuery, jQuery UI and myCode.js with scripts in the head.</dd>	
+
+			<dt><a href="w3Scripts-asap-scripts-at-end-of-document.html">w3Scripts-asap-scripts-at-end-of-document.html</a></dt>
+			<dd>The complex baseline loading js with asap at the bottom of the page.</dd>
+			
+			<dt><a href="w3Scripts-asap-scripts-in-head.html">w3Scripts-asap-scripts-in-head.html</a></dt>
+			<dd>The complex baseline loading js with asap in the head.</dd>
+		</dl>
+		
+		
+	</body>
+</html>

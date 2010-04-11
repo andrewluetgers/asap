@@ -3,49 +3,44 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Scripts in HTML documents</title>
-	<script language="JavaScript" type="text/javascript" src="../../asap-0.2.js"></script>
-	<script language="JavaScript" type="text/javascript">
-		// returns the ms elapsed since this code was evalueated
-		var getLoadTime = (function() {
-			var now = function() {
-					return new Date().getTime();	
-				},
-			
-				startTime = now();
-			
-			return function() {
-				return now() - startTime;	
-			};
-		}());
+	<link rel="stylesheet" type="text/css" href="W3C-REC.css">
+	<link rel="STYLESHEET" href="default.css" type="text/css">
+	<script type="text/javascript">
+		// used for logging load time
+		var _now = function() {return new Date().getTime();};
+		var _startTime = _now();
+		var getLoadTime = function() {return _now() - _startTime;};
 		
 		// if no log just capture messages
 		if(!window.console) {
-			console = {
+			window.console = {
 				messages: [],
 				log: function(msg) {
 					this.messages.push(msg);
 				}
 			};	
 		}
-		console.log("asap library at top of document:");
 		
-		// asap library by andrew luetgers
-		// mit liscense
-		//asap={isReady:false,readyBound:false,readyList:[],DOMContentLoaded:false,onReady:function(a){this.bindReady();if(this.isReady){a();}else{if(this.readyList){this.readyList.push(a);}}return this;},ready:function(){if(!asap.isReady){if(!document.body){return setTimeout(asap.ready,13);}asap.isReady=true;if(asap.readyList){var b,a=0;while((b=asap.readyList[a++])){b();}asap.readyList=null;}}},bindReady:function(){if(this.readyBound){return;}this.readyBound=true;if(document.readyState==="complete"){return this.ready();}if(document.addEventListener){document.addEventListener("DOMContentLoaded",DOMContentLoaded,false);window.addEventListener("load",asap.ready,false);}else{if(document.attachEvent){document.attachEvent("onreadystatechange",DOMContentLoaded);window.attachEvent("onload",asap.ready);var a=false;try{a=window.frameElement===null;}catch(b){}if(document.documentElement.doScroll&&a){this.doScrollCheck();}}}},doScrollCheck:function(){if(asap.isReady){return;}try{document.documentElement.doScroll("left");}catch(a){setTimeout(asap.doScrollCheck,1);return;}asap.ready();},codeReadyList:[],isCodeReady:false,codeReadyQued:false,codeReady:function(c){if(typeof c=="function"){asap.codeReadyList.push(c);}else{if(asap.require.scriptQue.length===0&&!asap.isCodeReady){if(!asap.isReady&&!asap.codeReadyQued){asap.codeReadyQued=true;asap.onReady(function(){asap.codeReady();});}else{asap.isCodeReady=true;if(asap.codeReadyList){var a,b=0;while((a=asap.codeReadyList[b++])){a();}asap.codeReadyList=null;}}}}}};if(document.addEventListener){DOMContentLoaded=function(){document.removeEventListener("DOMContentLoaded",DOMContentLoaded,false);asap.ready();};}else{if(document.attachEvent){DOMContentLoaded=function(){if(document.readyState==="complete"){document.detachEvent("onreadystatechange",DOMContentLoaded);asap.ready();}};}}asap.get=(function(){var a=function(){return false;};if(window.XMLHttpRequest&&(window.location.protocol!=="file:"||!window.ActiveXObject)){a=function(){return new window.XMLHttpRequest();};}else{a=function(){try{return new window.ActiveXObject("Microsoft.XMLHTTP");}catch(b){}};}return function(d){var h=a(),c=d.url||false,g=d.success||false,b=d.error||false;if(!h||!c||!g||!b){return;}h.open("GET",c,true);h.onreadystatechange=function(){if(h.readyState==4){if((window.location.protocol=="file:"||h.status==200)&&(h.responseText&&g)){g(h.responseText);}else{if(b){b(h.status);}}}};try{h.send("");}catch(f){if(b){b(f);}}return h;};}());asap.require=(function(){var l=[],k={},c=/[a-z0-9\-\.]+\.[a-z]{2,3}$/i,g=/^http:/i,i=/^http:|file:/i,r=c.exec(window.location.host),j="",o=0,s=0,d=0,e=document.getElementsByTagName("head")[0],a=function(v){var u=g.exec(v);var w=window.location.protocol;if(u===null){return true;}if(w=="file:"){return false;}if(u[0]==w=="http:"){if(r==c.exec(v)){return true;}}return false;},n=function(){var v,u;if((v=l[0])&&(u=k[v])){if(u.status=="loaded"){u.status="parsing";b(u.response+" ;(asap.require.evalComplete('"+v+"'));");}}},m=function(v){var u;if(l[0]==v&&(u=k[v])&&u.status=="parsing"){u.status="loaded";s++;l.splice(0,1);u.response="already evaled";if(l.length){n();}else{if(s==o){asap.codeReady();}}}else{}},t=function(u){scriptObj.status="loading";h(u,function(){k[u].status="parsing";asap.require.evalComplete(u);});},h=function(v,w){var u=document.createElement("script");u.type="text/javascript";if(u.readyState){u.onreadystatechange=function(){if(u.readyState=="loaded"||u.readyState=="complete"){u.onreadystatechange=null;w();}};}else{u.onload=function(){w();};}u.src=v;e.appendChild(u);},p=(function(){var u=document.documentElement,v=document.createElement("script"),y="script"+new Date().getTime(),w=false;v.type="text/javascript";try{v.appendChild(document.createTextNode("window."+y+"=1;"));}catch(x){}u.insertBefore(v,u.firstChild);if(window[y]){delete window[y];w=true;}u.removeChild(v);return w;}()),b=function(w){var v=e||document.documentElement,u=document.createElement("script");u.type="text/javascript";if(p){u.appendChild(document.createTextNode(w));}else{u.text=w;}v.insertBefore(u,v.firstChild);v.removeChild(u);},q=function(u){var v=document.createElement("link");v.rel="stylesheet";v.type="text/css";v.href=u;e.appendChild(v);},f=function(z){var x,u,y,v;if(typeof z=="object"){x=z.loadInOrder;o=u=x.length||0;y="";j=z.localScriptRoot||j;for(var w=0;w<u;w++){asap.require(x[d]);}return;}if(i.exec(z)){y=z;}else{y=j+z;}if(!k[y]){l.push(y);v=k[y]={status:"qued",xhr:false,response:false};d++;if(!a(y)){t(y);return;}v.xhr=asap.get({url:y,success:function(A){var B=k[y];B.status="loaded";B.response=A;B.xhr=false;if(l[0]==y){n();}},error:function(A){var B=k[y];t(y);}});}else{throw ("ERROR asap.loadScript requires a string!");}};asap.onReady(function(){n();});asap.codeReady(function(){});f.evalComplete=m;f.scriptQue=l;return f;}());
-
-		asap.require({
-			localScriptRoot: "file:///C:/workspaces/projects/asap/tests/w3Examples/",
-			loadInOrder: [
-				"myCodeASAP.js",
-				"libs/jquery-1.4.2.js",
-				"libs/1.7.2-jquery-ui.js"
-			]
+		var onLoadHandler = function() {
+			console.log("onloadFired at " + getLoadTime());
+		};
+	</script>
+	
+	<script language="JavaScript" type="text/javascript" src="../asap-0.4-comments-logs.js"></script>
+	<script language="JavaScript" type="text/javascript">
+		asap.require([
+			"js/libs/json2.js",
+			"http://code.jquery.com/jquery-1.4.2.min.js",
+			"js/libs/1.7.2-jquery-ui.js",
+			"js/myCode.js"
+		]).domReady(function() {
+			console.log("asap domReady fired at "+ getLoadTime());
+		}).codeReady(function() {
+			console.log("asap codeReady fired at "+ getLoadTime());
 		});
 	</script>
-	<link rel="stylesheet" type="text/css" href="W3C-REC.css">
-	<link rel="STYLESHEET" href="default.css" type="text/css">
 </head>
-<body onload="console.log('onload at ' + getLoadTime());">
+<body onload="onLoadHandler();">
 <div class="navbar" align="center">&nbsp;<a href="forms.html">previous</a>
 &nbsp; <a href="../sgml/intro.html">next</a> &nbsp; <a href= 
 "../cover.html#minitoc">contents</a> &nbsp; <a href="../index/elements.html">
@@ -912,5 +907,6 @@ next</a> &nbsp; <a href="../cover.html#minitoc">contents</a> &nbsp; <a href=
 "../index/attributes.html">attributes</a> &nbsp; <a href="../index/list.html">
 
 index</a></div>
+
 </body>
 </html>
