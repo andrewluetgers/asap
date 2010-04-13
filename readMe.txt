@@ -3,6 +3,12 @@ MIT License: 	http://en.wikipedia.org/wiki/MIT_License
 version:		0.4 - 4/10/2010
 author: 		andrew dot luetgers at gmail
 
+Changes in version 0.4.1:
+	* added css file importing support
+	* refactored require function into separate functions to ensure proper order of code execution
+	* been messing with the jquery domready code (may be a bad idea)
+	* lazyloaded jquery plugin now chokes ie for some reason
+
 Changes in version 0.4:
 	* fixed a bug breaking script order in debug mode
 	* fixed a bug causing failure of lazy-loading after initial page load

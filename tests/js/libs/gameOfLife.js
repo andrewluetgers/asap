@@ -182,4 +182,4 @@ function KArray2D(NumOfRows,NumOfCols){
 	return k;
 }
 
-
+console.log("game of life parsed at :"+ getLoadTime());

@@ -56,24 +56,25 @@
 					// ...now use the plugin!
 					console.log("+++++++++++++++++++++lazyloaded");
 					$("#world").life({
-						boardWidth: 256, //number of colums
-						boardHeight: 256, //number of rows
 						cellsize: 8, //size of cells
-						timeout: 1 //delay between cycles
+						timeout: 20 //delay between cycles
 					});
 				});
 			};
 		</script>
 		
-		<script type="text/javascript" src="../asap-0.4-min.js"></script>
+		<script type="text/javascript" src="../asap-0.4.1-comments-logs.js"></script>
 		<script type="text/javascript">		
 			asap.require([
 				"js/libs/jquery-1.4.2.min.js",
+				"css/simple.css",
 				"js/libs/1.7.2-jquery-ui.js",
 				"js/simple.js"
-			]).domReady(function() {
+			], true).domReady(function() {
+				console.log("slajsalkds "+ getLoadTime());
 				assert("asap.domReady");
 			}).codeReady(function(){
+				console.log("gggggggggggggggggg "+ getLoadTime());
 				assert("asap.codeReady");
 			});
 		</script>
