@@ -1,6 +1,6 @@
 /* asap script loading library
  * MIT License: http://en.wikipedia.org/wiki/MIT_License
- * version:	0.4 - 4/10/2010
+ * version:	0.4.1 - 4/10/2010
  * author: andrew dot luetgers at gmail
  */ 
 
