@@ -55,22 +55,24 @@
 				asap.require("js/libs/gameOfLife.js").codeReady(function() {
 					// ...now use the plugin!
 					console.log("+++++++++++++++++++++lazyloaded");
-					$("#world").life({
-						cellsize: 8, //size of cells
-						timeout: 20 //delay between cycles
-					});
+					setTimeout(function() {
+						$("#world").life();
+					}, 1000);
 				});
 			};
 		</script>
 		
-		<script type="text/javascript" src="../asap-0.4.1-comments-logs.js"></script>
+		<script type="text/javascript" src="js/asap-min.js"></script>
 		<script type="text/javascript">		
-			asap.require([
-				"js/libs/jquery-1.4.2.min.js",
-				"css/simple.css",
-				"js/libs/1.7.2-jquery-ui.js",
-				"js/simple.js"
-			], true).domReady(function() {
+			asap.require({
+				debug: true,
+				files: [
+					"js/libs/jquery-1.4.2.min.js",
+					"css/simple.css",
+					"js/libs/1.7.2-jquery-ui.js",
+					"js/simple.js"
+				]
+			}).domReady(function() {
 				console.log("slajsalkds "+ getLoadTime());
 				assert("asap.domReady");
 			}).codeReady(function(){

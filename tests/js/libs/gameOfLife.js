@@ -8,6 +8,9 @@
  *
  * Date: 2009-04-21  
  */
+ 
+ //throw new Error("this is a test error");
+ 
 (function($){
 	$.fn.life = function() {
 		var defaults = {
@@ -16,7 +19,7 @@
 	   cellsize: 5,	   
 	   timeout: 1000   
 		};
-		world = $(this);
+		var world = $(this);
 		var options = $.extend(defaults, options);				
 		var lifedata = new KArray2D(options.boardWidth,options.boardHeight);		
 		var tw = options.boardWidth * options.cellsize;
