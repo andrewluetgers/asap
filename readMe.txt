@@ -49,6 +49,7 @@ ASAP:	Roughly, yes I'm a few bytes larger than LABjs and a few k smaller than Re
 RM: 	Cool, whats next? Give us a taste of the real asap at work.
 ASAP:	OK here's a couple code samples :-)
 		
+		
 		//simple array notation syntax...
 		
 		asap.require([
@@ -62,9 +63,9 @@ ASAP:	OK here's a couple code samples :-)
 		// object notation providing a local root
 		
 		asap.require({
-			root: "http://www.mysite.com/",
+			root: 'http://www.mysite.com/',
 			files: [
-				"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js",
+				'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
 				"js/simple.js"
 			]
 		}).codeReady(function(){
@@ -72,12 +73,20 @@ ASAP:	OK here's a couple code samples :-)
 		});
 		
 		
-		// lazy load js after page load (a string can be passed instead of an array if only one file is required)
+		// string notation for single file requests
 		
-		asap.require("myFile").codeReady(function() {
-			...run code that requires "myFile"....
+		asap.require("myFile.js").codeReady(function() {
+			functionInMyFile();
 		});
 		
+
+		// css is supported too!
+		asap.require(["myWidget.js", "myWidget.css"]).codeReady(function() {
+			myWidgetInit();
+		});
+		
+		
+		// to lazy-load resources after page load just call asap again the same way
 
 
 RM: 	Aren't there problems with debugging code when its loaded with ajax, no line numbers?
